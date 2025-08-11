@@ -35,10 +35,10 @@ def write_display(message):
         write_file(message)
         client.call("displaymessage", message)# Send message to display via RPC call
     except RpcError.TimeoutError:
-        error_message = f"Error while displaying message: {e}"
+        error_message = "Unable to retrieve  from the M4"
         print(error_message)
         write_file(error_message)
-        raise
+        
 
 #connection to the drive
 def connect_ethercat_drive(interface_name, slave_id, dict_path, mc, alias="servo1"):
@@ -125,7 +125,7 @@ def start_test(mc, alias, activated, release): # changer le nom
 
 def to_modify_current(mc, alias, register, values):
     mc.communication.set_register(register, values, alias, 1)
-    write_display(f"Current value updated: current value is {values} ") # ajouter la valeur  de  courant modifé
+    write_display(f"Current value updated: current value is {values} ") # # add the modified current value
 
 
 def perform_commutation_and_check_phasing(mc, alias):
@@ -366,7 +366,7 @@ def test_motor_no_load(mc, alias, type_de_moteur, register, velocity_MAX, specif
     start_test(mc, alias, False, False)
     write_display(f"Test ended  for {alias}.")
 
-#pose la question concerne si la boucle infini
+
 def disconnect(mc,alias):
     start_test(mc,alias,False,True)
     mc.communication.disconnect(alias)
@@ -406,12 +406,8 @@ def run_motor_tests(mc, alias, slave_id, dict_path, register_name, register, val
             position = mc.motion.get_actual_position(alias, 1) * 360 / 2009497.6
             write_display(f"[{alias}] Position finale : {position:.2f}°")
     except Exception as e:
-        try:
             write_display(f"Error during test for {alias}: {e}")
-        except Exception as display_error:
-           write_file(f"Error : RPC display failed: {display_error}")
-                
-
+    
     finally:
             disconnect(mc, alias)
   
