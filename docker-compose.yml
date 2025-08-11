@@ -1,0 +1,10 @@
+services:
+  python-test-script:
+    build: .
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOOP_INTERVAL=1 
+    extra_hosts:
+      - "m4-proxy:host-gateway"
+    command: python testarduino.py
