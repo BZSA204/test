@@ -33,7 +33,7 @@ def write_display(message):
     try:
         print(message)
         write_file(message)
-        client.call("displaymessage", message)# Send message to display via RPC call
+        client.call("rpc_displaymessage", message)# Send message to display via RPC call
     except RpcError.TimeoutError:
         error_message = "Unable to retrieve  from the M4"
         print(error_message)
