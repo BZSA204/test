@@ -22,10 +22,10 @@ Paint paint(image, 0, 0);
 Epd epd;
 
 std::queue<String> results;
-void displayMessage(String message) {
-    Serial.println("Affichage : " + message);
+void displayAndLight(String message) {
+    Serial.println("Display : " + message);
 
-    //gestion du succes de test ou erreur
+    //test success or error management
     if (message.startsWith("Error")) {
         digitalWrite(LED_RED, HIGH);
         digitalWrite(LED_GREEN, LOW);
@@ -35,10 +35,10 @@ void displayMessage(String message) {
         digitalWrite(LED_RED, LOW);
     }
 
-    // Ajouter message dans la file
+    //Add message to queue
     results.push(message);
 
-    // Si plus de MAX_MESSAGES, retirer le plus ancien
+    // If more than MAX_MESSAGES, remove the oldest
     if (results.size() > MAX_MESSAGES) {
         results.pop();
     }
@@ -47,14 +47,14 @@ void displayMessage(String message) {
     paint = Paint(image, epd.bufwidth * 8, epd.bufheight);
     paint.Clear(UNCOLORED);
 
-    // Afficher les messages à l'écran, 1 message par ligne
+    // Display messages on screen, 1 message per line
     int y = 5;
-    std::queue<String> temp = results;  // copie pour itérer sans vider la file
+    std::queue<String> temp = results;  //copy to iterate without emptying the queue
     while (!temp.empty()) {
         String msg = temp.front();
         temp.pop();
         paint.DrawStringAt(5, y, msg.c_str(), &Font8, COLORED);
-        y += 5;  // espacement vertical entre lignes, ajuste si besoin
+        y += 5;  
     }
 
     epd.Display1(image);
@@ -72,10 +72,10 @@ void displayMessage(String message) {
 
 void rpc_displaymessage(JsonVariant arg) {
   String msg = arg.as<String>();
-  Serial.println("Message reçu via RPC : " + msg);
-  displayMessage(msg);
+  Serial.println("Message received via RPC : " + msg);
+  displayAndLight(msg);
 }
-// Fonction RPC pour lire l'état des boutons
+
 JsonVariant rpc_get_buttons() {
     JsonDocument doc;
     doc["execute"] = digitalRead(BUTTON_EXECUTE) == LOW ? "pressed" : "released";
@@ -94,14 +94,14 @@ void setup() {
   digitalWrite(LED_RED, LOW);
 
   if (epd.Init(FULL) != 0) {
-    Serial.println("Erreur initialisation e-Paper");
+    Serial.println("e-Paper initialization error");
     return;
   }
 
    displayMessage("Ready...");
    RPC.begin()
    RPC.bind("displaymessage", rpc_displaymessage);
-   RPC.bind("displaymessage", rpc_displaymessage);
+   RPC.bind("get_buttons", rpc_get_buttons);
 
 }
 
