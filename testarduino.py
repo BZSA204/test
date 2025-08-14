@@ -419,96 +419,100 @@ def main():
     register = "CL_CUR_REF_MAX"
     dict_path = r"C:\Users\Salma Bouazzaoui\Desktop\k2-mro-e_eoe_1_2.6.0.xdf"
 
-    run_motor_tests(
-        mc=mc,
-        alias="servo2",
-        slave_id=2,
-        dict_path=dict_path,
-        register_name=register_name,
-        register=register,
-        values=2.2,
-        velocity_MAX=20,
-        specified_current=2,
-        temps_test=8,
-        velocity_list={
-            "test1": 5,
-            "test2": -5,
-            "test3": 8,
-            "test4": -8,
-            "test5": 10,
-            "test6": -10
-        },
-       current_compare=3,
-       nominal_current=44,
-       velocity=4,
-       current_max=115,
-       brake_test_duration=5,
-       type_de_moteur="traction",
-        do_brake_test=True
-   )
-    write_display("Waiting for servo2 to come to a complete stop...")
-    time.sleep(10)
 
+    button_state_execute = client.call("get_ExecuteButton")
+    button_state_mode = client.call("get_MotortypeButton")
 
-    run_motor_tests(
-        mc=mc,
-        alias="servo1",
-        slave_id=1,
-        dict_path=dict_path,
-        register_name=register_name,
-        register=register,
-        values=1,
-        velocity_MAX=40,
-        specified_current=0.8,
-        temps_test=4,
-        velocity_list={
-            "test1": -10,
-            "test2": 10,
-            "test3": -13,
-            "test4": 13
-        },
-        current_compare=1,
-        nominal_current=15.51,
-        velocity=10,
-        current_max=32.23,
-        brake_test_duration=2,
-        type_de_moteur="direction",
-        do_brake_test=False
-    )
-    write_display("Waiting for servo2 to come to a complete stop...")
-    time.sleep(10)
+    if button_state_execute == "pressed":
+        if button_state_mode == "traction":
+            run_motor_tests(
+                mc=mc,
+                alias="servo2",
+                slave_id=2,
+                dict_path=dict_path,
+                register_name=register_name,
+                register=register,
+                values=2.2,
+                velocity_MAX=20,
+                specified_current=2,
+                temps_test=8,
+                velocity_list={
+                    "test1": 5,
+                    "test2": -5,
+                    "test3": 8,
+                    "test4": -8,
+                    "test5": 10,
+                    "test6": -10
+                },
+                current_compare=3,
+                nominal_current=44,
+                velocity=4,
+                current_max=115,
+                brake_test_duration=5,
+                type_de_moteur="traction",
+                do_brake_test=True
+            )
+            write_display("Waiting for servo2 to come to a complete stop...")
+            time.sleep(10)
 
+        else:
+            run_motor_tests(
+                mc=mc,
+                alias="servo1",
+                slave_id=1,
+                dict_path=dict_path,
+                register_name=register_name,
+                register=register,
+                values=1,
+                velocity_MAX=40,
+                specified_current=0.8,
+                temps_test=4,
+                velocity_list={
+                    "test1": -10,
+                    "test2": 10,
+                    "test3": -13,
+                    "test4": 13
+                },
+                current_compare=1,
+                nominal_current=15.51,
+                velocity=10,
+                current_max=32.23,
+                brake_test_duration=2,
+                type_de_moteur="direction",
+                do_brake_test=False
+            )
+            write_display("Waiting for servo1 to come to a complete stop...")
+            time.sleep(10)
 
-    run_motor_tests(
-        mc=mc,
-        alias="servo1",
-        slave_id=1,
-        dict_path=dict_path,
-        register_name=register_name,
-        register=register,
-        values=1,
-        velocity_MAX=40,
-        specified_current=0.8,
-        temps_test=4,
-        velocity_list={
-            "test1": -10,
-            "test2": 10,
-            "test3": -13,
-            "test4": 13
-        },
-        current_compare=1,
-        nominal_current=15.51,
-        velocity=-10,
-        current_max=32.23,
-        brake_test_duration=2,
-        type_de_moteur="direction",
-        do_brake_test=False
-    )
+            run_motor_tests(
+                mc=mc,
+                alias="servo1",
+                slave_id=1,
+                dict_path=dict_path,
+                register_name=register_name,
+                register=register,
+                values=1,
+                velocity_MAX=40,
+                specified_current=0.8,
+                temps_test=4,
+                velocity_list={
+                    "test1": -10,
+                    "test2": 10,
+                    "test3": -13,
+                    "test4": 13
+                },
+                current_compare=1,
+                nominal_current=15.51,
+                velocity=-10,
+                current_max=32.23,
+                brake_test_duration=2,
+                type_de_moteur="direction",
+                do_brake_test=False
+            )
+            write_display("Final direction test for servo1 completed.")
+    else:
+        print("No test triggered (button not pressed)")
 
-
-    write_display("Final direction test for servo1 completed.")
-
-    
 
    
 if __name__ == "__main__":

@@ -76,13 +76,12 @@ void rpc_displaymessage(JsonVariant arg) {
   displayAndLight(msg);
 }
 
-JsonVariant rpc_get_buttons() {
-    JsonDocument doc;
-    doc["execute"] = digitalRead(BUTTON_EXECUTE) == LOW ? "pressed" : "released";
-    doc["mode"] = digitalRead(BUTTON_MODE) == LOW ? "traction" : "direction";
-    return doc.as<JsonVariant>();
+String rpc_getExecuteButtonState() {
+    return digitalRead(BUTTON_EXECUTE) == LOW ? "pressed" : "released";
 }
-
+String rpc_getMotortypeButtonState() {
+    return digitalRead(BUTTON_MODE) == LOW ? "traction" : "direction";
+}
 
 void setup() {
   Serial.begin(115200);
@@ -101,7 +100,8 @@ void setup() {
    displayMessage("Ready...");
    RPC.begin()
    RPC.bind("displaymessage", rpc_displaymessage);
-   RPC.bind("get_buttons", rpc_get_buttons);
+   RPC.bind("get_ExecuteButton", rpc_getExecuteButtonState);
+   RPC.bind("get_MotortypeButton", rpc_getMotortypeButtonState);
 
 }
 
